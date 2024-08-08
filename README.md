@@ -6,6 +6,10 @@ Is a Magisk Module for Clean RAM Cache And Stop Background Apps, Google Apps, Th
 
 ![screenshot](https://raw.githubusercontent.com/rakarmp/Risk/main/screenshot/img.jpg)
 
+![screenshot](https://raw.githubusercontent.com/rakarmp/Risk/main/screenshot/img1.jpg)
+
+![screenshot](https://raw.githubusercontent.com/rakarmp/Risk/main/screenshot/img2.jpg)
+
 ## How To Use
 
 Risk Can be used using [Magisk](https://github.com/topjohnwu/Magisk) or [KernelSu](https://github.com/tiann/KernelSU)
