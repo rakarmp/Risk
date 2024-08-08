@@ -6,6 +6,24 @@ Is a Magisk Module for Clean RAM Cache And Stop Background Apps, Google Apps, Th
 
 ![screenshot](https://raw.githubusercontent.com/rakarmp/Risk/main/screenshot/img.jpg)
 
+## How To Use
+
+- Download Zip Build In [Here](https://t.me/rexxCloud/1179)
+- Flash To Magisk Manager
+- Reboot Your Device
+- Open Termux App, You Can Download Termux [Here](https://www.apkmirror.com/apk/fredrik-fornwall/termux-fdroid-version/termux-fdroid-version-0-119-0-beta-1-release/termux-f-droid-version-0-119-0-beta-1-android-apk-download/download/?key=a1ef8c3eb4c8ec3722c8f11ede607b6292c6f4c2)
+- Follow Command `su -c risk` Below: 
+
+```bash
+# Exec And Follow Menu The Emergent
+# If You Use KernelSu Enable SuperUser 
+# In KernelSu App Give Su Permission For Termux
+
+$ su -c risk 
+```
+- Enjoy With Risk™
+
+
 ## Why Must Risk?
 
 ### Improved Device Performance
