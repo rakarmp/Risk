@@ -19,9 +19,9 @@
 # THE SOFTWARE.
 #
 SKIPMOUNT=false
-PROPFILE=false
+PROPFILE=true
 POSTFSDATA=false
-LATESTARTSERVICE=false
+LATESTARTSERVICE=true
 REPLACE_EXAMPLE="
 /system/app/Youtube
 /system/priv-app/SystemUI
@@ -62,11 +62,12 @@ ui_print " "
 sleep 1
 ui_print "- Setup Risk Permission"
 unzip -o "$ZIPFILE" 'excluded_apps.txt' -d $MODPATH >&2
+unzip -o "$ZIPFILE" 'service.sh' -d $MODPATH >&2
+unzip -o "$ZIPFILE" 'system.prop' -d $MODPATH >&2
 unzip -o "$ZIPFILE" 'system/*' -d $MODPATH >&2
 mkdir $RISK_DIR/Risk
 cp $MODPATH/excluded_apps.txt $RISK_DIR/Risk
 chmod +x "$MODPATH/system/bin/risk"
-setprop persist.security.adbinput 1
 
 set_permissions() {
   set_perm_recursive $MODPATH 0 0 0755 0644
