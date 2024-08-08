@@ -28,6 +28,19 @@ Risk Can be used using [Magisk](https://github.com/topjohnwu/Magisk) or [KernelS
 $ su -c risk 
 ```
 
+## Ignore Apps
+
+Risks can exclude applications if they are listed in the txt file at this path: `/sdcard/Android/Risk/excluded_apps.txt` 
+
+```txt
+// This Comment 
+// Sign // Will not be executed
+com.termux
+jackpal.androidterm
+com.google.android.gms 
+com.google.android.gsf
+```
+
 
 ## Why Must Risk?
 
