@@ -49,4 +49,4 @@ Please be careful if you use custom mode with the option to stop system applicat
 
 ## Links
 
-Go to [here](https://t.me/rexxCloud/1179) to downloads Risk™
+Go to [here](https://github.com/rakarmp/Risk/tree/main/build) to download Risk™ build.
