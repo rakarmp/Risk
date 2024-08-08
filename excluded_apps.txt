@@ -1,0 +1,22 @@
+// This Is Comment
+// Add Ignore Apps In Here
+
+com.google.android.gms 
+com.google.android.gsf
+com.android.vending 
+com.android.systemui
+com.android.phone
+com.android.providers.contacts
+com.android.settings
+com.android.packageinstaller
+com.android.providers.media
+com.android.bluetooth
+com.android.phone
+com.android.server.wifi
+com.android.inputdevices 
+com.android.location.fused
+com.google.android.gsf.login
+android
+com.android.nfc 
+com.google.android.location 
+com.android.devicepolicy
