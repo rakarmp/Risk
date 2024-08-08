@@ -31,6 +31,17 @@ NC='\033[0m'
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 EXCLUDED_APPS_FILE="/sdcard/Android/Risk/excluded_apps.txt"
+DEVICE_RAM=$(grep "MemTotal" /proc/meminfo | awk '{print $2}')
+DEVICE_CPU=$(grep "processor" /proc/cpuinfo | wc -l)
+MODPATH="/data/adb/modules/riskr"
+
+LMKD_LOW=1001
+LMKD_MEDIUM=800
+LMKD_CRITICAL=0
+LMKD_CRITICAL_UPGRADE=false
+LMKD_UPGRADE_PRESSURE=100
+LMKD_DOWNGRADE_PRESSURE=100
+LMKD_KILL_HEAVIEST_TASK=true
 
 load_excluded_apps() {
     EXCLUDED_APPS=()
@@ -59,6 +70,16 @@ is_excluded() {
         fi
     done
     return 1
+}
+
+lmksed() {
+echo "ro.lmk.low=$LMKD_LOW" > $MODPATH/system.prop
+echo "ro.lmk.medium=$LMKD_MEDIUM" >> $MODPATH/system.prop
+echo "ro.lmk.critical=$LMKD_CRITICAL" >> $MODPATH/system.prop
+echo "ro.lmk.critical_upgrade=$LMKD_CRITICAL_UPGRADE" >> $MODPATH/system.prop
+echo "ro.lmk.upgrade_pressure=$LMKD_UPGRADE_PRESSURE" >> $MODPATH/system.prop
+echo "ro.lmk.downgrade_pressure=$LMKD_DOWNGRADE_PRESSURE" >> $MODPATH/system.prop
+echo "ro.lmk.kill_heaviest_task=$LMKD_KILL_HEAVIEST_TASK" >> $MODPATH/system.prop
 }
 
 stop_apps() {
@@ -123,14 +144,143 @@ custom_menu() {
     done
 }
 
+lmkd_menu() {
+while true; do
+    echo " "
+    echo -e "${YELLOW}DEVICE RAM : $DEVICE_RAM${NC}"
+    echo -e "${YELLOW}DEVICE CPU. : $DEVICE_CPU${NC}"
+    echo " "
+        echo -e "${BLUE}LMKD Available Mode:${NC}"
+        echo "1. Easy ${YELLOW}(NEED REBOOT)${NC}"
+        echo "   Suitable for daily use"
+        echo "   which is not too intensive."
+        echo "2. Medium ${YELLOW}(NEED REBOOT)${NC}"
+        echo "   Suitable for daily use "
+        echo "   intensive ones, such as playing games or "
+        echo "   use applications that require "
+        echo "   high resource."
+        echo "3. Hard ${YELLOW}(NEED REBOOT)${NC}"
+        echo "   Suitable for very use "
+        echo "   intensive, like playing a very game"
+        echo "   heavy or using applications that "
+        echo "   require very high resources."
+        echo "4. Reset LMKD ${YELLOW}(NEED REBOOT)${NC}"
+        echo "5. Return to main menu"
+        printf "Options: "
+        read -r MODE
+
+case $MODE in
+  1)
+    clear
+    sleep 1
+    LMKD_LOW=1500
+    echo -e "${RED}LMKD LOW SET TO -->  $LMKD_LOW${NC}"
+    LMKD_MEDIUM=1000
+    echo -e "${RED}LMKD MEDIUM SET TO -->  $LMKD_MEDIUM${NC}"
+    LMKD_CRITICAL=0
+    echo -e "${RED}LMKD CRITICAL SET TO -->  $LMKD_CRITICAL${NC}"
+    LMKD_CRITICAL_UPGRADE=false
+    echo -e "${RED}LMKD CRITICAL UPGRADE SET TO -->  $LMKD_CRITICAL_UPGRADE${NC}"
+    LMKD_UPGRADE_PRESSURE=50
+    echo -e "${RED}LMKD CRITICAL PRESSURE SET TO -->  $LMKD_CRITICAL_PRESSURE${NC}"
+    LMKD_DOWNGRADE_PRESSURE=50
+    echo -e "${RED}LMKD DOWNGRADE PRESSURE SET TO -->  $LMKD_DOWNGRADE_PRESSURE${NC}"
+    LMKD_KILL_HEAVIEST_TASK=false
+    echo -e "${RED}LMKD KILL HEAVIEST TASK SET TO -->  $LMKD_KILL_HEAVIEST_TASK${NC}"
+    lmksed
+    sleep 1
+    echo " "
+    echo -e "${YELLOW}NEED REBOOT TO APPLY LMKD${NC}"
+    echo " "
+    exit 0
+    ;;
+  2)
+    clear
+    sleep 1
+    LMKD_LOW=1001
+    echo -e "${RED}LMKD LOW SET TO -->  $LMKD_LOW${NC}"
+    LMKD_MEDIUM=800
+    echo -e "${RED}LMKD MEDIUM SET TO -->  $LMKD_MEDIUM${NC}"
+    LMKD_CRITICAL=0
+    echo -e "${RED}LMKD CRITICAL SET TO -->  $LMKD_CRITICAL${NC}"
+    LMKD_CRITICAL_UPGRADE=false
+    echo -e "${RED}LMKD CRITICAL UPGRADE SET TO -->  $LMKD_CRITICAL_UPGRADE${NC}"
+    LMKD_UPGRADE_PRESSURE=100
+    echo -e "${RED}LMKD CRITICAL PRESSURE SET TO -->  $LMKD_CRITICAL_PRESSURE${NC}"
+    LMKD_DOWNGRADE_PRESSURE=100
+    echo -e "${RED}LMKD DOWNGRADE PRESSURE SET TO -->  $LMKD_DOWNGRADE_PRESSURE${NC}"
+    LMKD_KILL_HEAVIEST_TASK=true
+    echo -e "${RED}LMKD KILL HEAVIEST TASK SET TO -->  $LMKD_KILL_HEAVIEST_TASK${NC}"
+    lmksed
+    sleep 1
+    echo " "
+    echo -e "${YELLOW}NEED REBOOT TO APPLY LMKD${NC}"
+    echo " "
+    exit 0
+    ;;
+  3)
+    clear
+    sleep 1
+    LMKD_LOW=500
+    echo -e "${RED}LMKD LOW SET TO -->  $LMKD_LOW${NC}"
+    LMKD_MEDIUM=300
+    echo -e "${RED}LMKD MEDIUM SET TO -->  $LMKD_MEDIUM${NC}"
+    LMKD_CRITICAL=0
+    echo -e "${RED}LMKD CRITICAL SET TO -->  $LMKD_CRITICAL${NC}"
+    LMKD_CRITICAL_UPGRADE=true
+    echo -e "${RED}LMKD CRITICAL UPGRADE SET TO -->  $LMKD_CRITICAL_UPGRADE${NC}"
+    LMKD_UPGRADE_PRESSURE=200
+    echo -e "${RED}LMKD CRITICAL PRESSURE SET TO -->  $LMKD_CRITICAL_PRESSURE${NC}"
+    LMKD_DOWNGRADE_PRESSURE=200
+    echo -e "${RED}LMKD DOWNGRADE PRESSURE SET TO -->  $LMKD_DOWNGRADE_PRESSURE${NC}"
+    LMKD_KILL_HEAVIEST_TASK=true
+    echo -e "${RED}LMKD KILL HEAVIEST TASK SET TO -->  $LMKD_KILL_HEAVIEST_TASK${NC}"
+    lmksed
+    sleep 1
+    echo " "
+    echo -e "${YELLOW}NEED REBOOT TO APPLY LMKD${NC}"
+    echo " "
+    exit 0
+    ;;
+  4)
+    clear
+    rm $MODPATH/system.prop
+    touch $MODPATH/system.prop
+    sleep 1
+    echo " "
+    echo -e "${YELLOW}NEED REBOOT TO APPLY LMKD${NC}"
+    echo " "
+    exit 0
+    ;;
+  5)
+    clear
+    return
+    ;;
+  *)
+    echo "Are You Blind?"
+    exit 1
+    ;;
+esac
+done
+}
+
 main_menu() {
     while true; do
+    echo " "
+echo "${BLUE}╔═══╗───╔╗${NC}"
+echo "${BLUE}║╔═╗║───║║${NC}"
+echo "${BLUE}║╚═╝╠╦══╣║╔╗${NC}"
+echo "${BLUE}║╔╗╔╬╣══╣╚╝╝${NC}"
+echo "${BLUE}║║║╚╣╠══║╔╗╗${NC}"
+echo "${BLUE}╚╝╚═╩╩══╩╝╚╝ ULTIMATE TOOLS${NC}"
+echo " "
         echo "${BLUE}Select mode:${NC}"
-        echo "1. Safe (stop third party apps only)"
-        echo "2. Aggressive (stop third party apps and Google)"
-        echo "3. Custom (select the application category you want to stop)"
-        echo "4. Exit"
-        echo "5. Force Exit Termux"
+        echo "1. Safe ${YELLOW}(stop third party apps only)${NC}"
+        echo "2. Aggressive ${YELLOW}(stop third party apps and Google)${NC}"
+        echo "3. Custom ${YELLOW}(select the application category you want to stop)${NC}"
+        echo "4. LMKD Adjusment A10+"
+        echo "5. Exit"
+        echo "6. Force Exit Termux"
         printf "Options: "
         read -r choice
 
@@ -150,12 +300,16 @@ main_menu() {
                 ;;
             4)
                 clear
+                lmkd_menu
+                ;;
+            5)
+                clear
                 echo "Bye, Madafaka...."
                 sleep 0.5
                 clear
                 exit 0
                 ;;
-            5)
+            6)
                 clear
                 echo "Bye, Madafaka...."
                 sleep 0.5
