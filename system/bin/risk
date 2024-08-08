@@ -1,0 +1,160 @@
+#!/system/bin/sh
+# Risk - Module Magisk - Clean RAM Cache And Foce Stop Application By Category
+RED='\033[0;31m'
+
+GREEN='\033[0;32m'
+
+YELLOW='\033[0;33m'
+
+BLUE='\033[0;34m'
+
+NC='\033[0m'
+# MIT License
+# 
+# Copyright (c) 2024 rakarmp
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+EXCLUDED_APPS=("com.termux")
+
+trim() {
+    pm trim-caches 999G
+    echo 3 > /proc/sys/vm/drop_caches
+    echo -e "${GREEN}RAM Cache Cleared${NC}"
+}
+
+is_excluded() {
+    local app=$1
+    for excluded_app in "${EXCLUDED_APPS[@]}"; do
+        if [ "$app" == "$excluded_app" ]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+stop_apps() {
+    category="$1"
+    clear
+    echo -e "${YELLOW}Risk Mode: $mode${NC}"
+    trim
+    echo -e "${YELLOW}Stopping category apps: $category${NC}"
+
+    running_apps=$(pm list packages -3)
+    if [ "$category" = "google" ] || [ "$category" = "all" ]; then
+        running_apps="$running_apps $(pm list packages | grep 'com.google')"
+    fi
+    if [ "$category" = "system" ] || [ "$category" = "all" ]; then
+        running_apps="$running_apps $(pm list packages -s)"
+    fi
+
+    for app in $running_apps; do
+        package_name=$(echo "$app" | sed 's/package://')
+        if ! is_excluded "$package_name"; then
+            echo -e "${RED}Stop $package_name${NC}"
+            am force-stop "$package_name"
+        else
+            echo -e "${BLUE}Skipping $package_name (exception)${NC}"
+        fi
+    done
+    exit 0
+}
+
+custom_menu() {
+    while true; do
+        echo -e "${BLUE}Select the application category you want to stop:${NC}"
+        echo "1. Third party applications"
+        echo "2. Google Apps"
+        echo "3. System applications"
+        echo "4. All applications"
+        echo "5. Return to main menu"
+        printf "Options: "
+        read -r choice
+
+        case $choice in
+            1)
+                stop_apps "third_party"
+                ;;
+            2)
+                stop_apps "google"
+                ;;
+            3)
+                stop_apps "system"
+                ;;
+            4)
+                stop_apps "all"
+                ;;
+            5)
+                clear
+                return
+                ;;
+            *)
+                echo -e "${RED}Invalid Selection. Are You Blind?.${NC}"
+                ;;
+        esac
+    done
+}
+
+main_menu() {
+    while true; do
+        echo "${BLUE}Select mode:${NC}"
+        echo "1. Safe (stop third party apps only)"
+        echo "2. Aggressive (stop third party apps and Google)"
+        echo "3. Custom (select the application category you want to stop)"
+        echo "4. Exit"
+        echo "5. Force Exit Termux"
+        printf "Options: "
+        read -r choice
+
+        case $choice in
+            1)
+                mode="Safe"
+                stop_apps "third_party"
+                ;;
+            2)
+                mode="Aggresive"
+                stop_apps "google"
+                ;;
+            3)
+                clear
+                custom_menu
+                mode="Custom"
+                ;;
+            4)
+                clear
+                echo "Bye, Madafaka...."
+                sleep 0.5
+                clear
+                exit 0
+                ;;
+            5)
+                clear
+                echo "Bye, Madafaka...."
+                sleep 0.5
+                am force-stop com.termux
+                
+                ;;
+            *)
+                clear
+                echo "${RED}Are You Blind?.${NC}"
+                ;;
+        esac
+    done
+}
+clear
+main_menu
