@@ -22,16 +22,15 @@ SKIPMOUNT=false
 PROPFILE=false
 POSTFSDATA=false
 LATESTARTSERVICE=false
-
 REPLACE_EXAMPLE="
 /system/app/Youtube
 /system/priv-app/SystemUI
 /system/priv-app/Settings
 /system/framework
 "
-
 REPLACE="
 "
+RISK_DIR="/sdcard/Android"
 ui_print " "
 ui_print "  ╔═══╗───╔╗"
 ui_print "  ║╔═╗║───║║"
@@ -48,16 +47,24 @@ else
 ui_print "  Magisk Ver: $MAGISK_VER"
 ui_print "  Magisk Ver Code: $MAGISK_VER_CODE"
 fi
-sleep 0.5
+ui_print " "
+sleep 1
 ui_print "  Risk is a magisk module open source"
 ui_print "  project, you can view the entire code"
 ui_print "  to make sure there is no malware or"
 ui_print "  viruses that harm your device."
-sleep 0.5
+sleep 1
+ui_print " "
+ui_print "  You can add applications that you don't"
+ui_print "  want to stop in the path :"
+ui_print "  - /sdcard/Android/Risk/excluded_apps.txt"
 ui_print " "
 sleep 1
 ui_print "- Setup Risk Permission"
+unzip -o "$ZIPFILE" 'excluded_apps.txt' -d $MODPATH >&2
 unzip -o "$ZIPFILE" 'system/*' -d $MODPATH >&2
+mkdir $RISK_DIR/Risk
+cp $MODPATH/excluded_apps.txt $RISK_DIR/Risk
 chmod +x "$MODPATH/system/bin/risk"
 
 set_permissions() {
