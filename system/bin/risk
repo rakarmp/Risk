@@ -32,6 +32,21 @@ NC='\033[0m'
 # THE SOFTWARE.
 EXCLUDED_APPS=("com.termux")
 
+EXCLUDED_APPS_FILE="/sdcard/Android/Risk/excluded_apps.txt"
+
+load_excluded_apps() {
+    EXCLUDED_APPS=()
+    while IFS= read -r line; do
+        # Skip lines starting with //
+        if ! echo "$line" | grep -q "^//"; then
+            EXCLUDED_APPS+=("$line")
+        fi
+    done < "$EXCLUDED_APPS_FILE"
+}
+
+# Load excluded apps
+load_excluded_apps
+
 trim() {
     pm trim-caches 999G
     echo 3 > /proc/sys/vm/drop_caches
