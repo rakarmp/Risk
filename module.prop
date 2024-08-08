@@ -4,3 +4,4 @@ version=1.8-080824
 versionCode=166080824
 author=Zyarexx @Telegram
 description=Clean RAM Cache And Stop Background Apps, Google Apps, Third Party Apps Before Playing Games, To Get More Free RAM
+updateJson=https://raw.githubusercontent.com/rakarmp/Risk/main/update.json
