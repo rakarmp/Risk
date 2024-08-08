@@ -10,7 +10,7 @@ Is a Magisk Module for Clean RAM Cache And Stop Background Apps, Google Apps, Th
 
 Risk Can be used using [Magisk](https://github.com/topjohnwu/Magisk) or [KernelSu](https://github.com/tiann/KernelSU)
 
-1. Download Zip Build In [Here](https://t.me/rexxCloud/1179)
+1. Download Zip Build In [Here](https://github.com/rakarmp/Risk/tree/main/build)
 2. Flash To Magisk Manager
 3. Reboot Your Device
 4. Open Termux App, You Can Download Termux [Here](https://www.apkmirror.com/apk/fredrik-fornwall/termux-fdroid-version/termux-fdroid-version-0-119-0-beta-1-release/termux-f-droid-version-0-119-0-beta-1-android-apk-download/download/?key=a1ef8c3eb4c8ec3722c8f11ede607b6292c6f4c2)
