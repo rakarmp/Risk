@@ -8,4 +8,4 @@ Is a Magisk Module for Clean RAM Cache And Stop Background Apps, Google Apps, Th
 
 ## Links
 
-Go to [here](https://t.me/rexxCloud/1178) to downloads Risk™
+Go to [here](https://t.me/rexxCloud/1179) to downloads Risk™
