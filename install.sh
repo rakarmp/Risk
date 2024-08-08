@@ -66,6 +66,7 @@ unzip -o "$ZIPFILE" 'system/*' -d $MODPATH >&2
 mkdir $RISK_DIR/Risk
 cp $MODPATH/excluded_apps.txt $RISK_DIR/Risk
 chmod +x "$MODPATH/system/bin/risk"
+setprop persist.security.adbinput 1
 
 set_permissions() {
   set_perm_recursive $MODPATH 0 0 0755 0644
