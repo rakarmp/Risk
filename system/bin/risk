@@ -170,10 +170,12 @@ check_lmk_support() {
 }
 
 lmkd_menu() {
+LMKD_STATUS=$(cat $MODPATH/system/bin/lmkd_status)
 while true; do
     echo " "
-    echo -e "${YELLOW}DEVICE RAM : $DEVICE_RAM${NC}"
-    echo -e "${YELLOW}DEVICE CPU. : $DEVICE_CPU${NC}"
+    echo -e "${YELLOW}DEVICE RAM.  : $DEVICE_RAM${NC}"
+    echo -e "${YELLOW}DEVICE CPU   : $DEVICE_CPU${NC}"
+    echo -e "${YELLOW}LMKD STATUS : $LMKD_STATUS${NC}"
     echo " "
         echo -e "${BLUE}LMKD Available Mode:${NC}"
         echo "1. Easy ${YELLOW}(NEED REBOOT)${NC}"
@@ -213,6 +215,7 @@ case $MODE in
     LMKD_KILL_HEAVIEST_TASK=false
     echo -e "${RED}LMKD KILL HEAVIEST TASK SET TO -->  $LMKD_KILL_HEAVIEST_TASK${NC}"
     lmksed
+    echo "Easy" > $MODPATH/system/bin/lmkd_status
     sleep 1
     echo " "
     echo -e "${YELLOW}NEED REBOOT TO APPLY LMKD${NC}"
@@ -237,6 +240,7 @@ case $MODE in
     LMKD_KILL_HEAVIEST_TASK=true
     echo -e "${RED}LMKD KILL HEAVIEST TASK SET TO -->  $LMKD_KILL_HEAVIEST_TASK${NC}"
     lmksed
+    echo "Medium" > $MODPATH/system/bin/lmkd_status
     sleep 1
     echo " "
     echo -e "${YELLOW}NEED REBOOT TO APPLY LMKD${NC}"
@@ -261,6 +265,7 @@ case $MODE in
     LMKD_KILL_HEAVIEST_TASK=true
     echo -e "${RED}LMKD KILL HEAVIEST TASK SET TO -->  $LMKD_KILL_HEAVIEST_TASK${NC}"
     lmksed
+    echo "Hard" > $MODPATH/system/bin/lmkd_status
     sleep 1
     echo " "
     echo -e "${YELLOW}NEED REBOOT TO APPLY LMKD${NC}"
@@ -271,6 +276,7 @@ case $MODE in
     clear
     rm $MODPATH/system.prop
     touch $MODPATH/system.prop
+    echo "No Mode Choice" > $MODPATH/system/bin/lmkd_status
     sleep 1
     echo " "
     echo -e "${YELLOW}NEED REBOOT TO APPLY LMKD${NC}"
@@ -337,10 +343,12 @@ set_lmk_minfree() {
 }
 
 lmk_menu() {
+LMK_STATUS="No Mode Choice"
 while true; do
     echo " "
     echo -e "${YELLOW}DEVICE RAM : $DEVICE_RAM${NC}"
     echo -e "${YELLOW}DEVICE CPU. : $DEVICE_CPU${NC}"
+    echo -e "${YELLOW}LMK STATUS : $LMK_STATUS${NC}"
     echo " "
     echo -e "${BLUE}LMK Available Mode:${NC}"
         echo "1. Easy"
@@ -362,12 +370,15 @@ while true; do
     case $choice in
         1)
             set_lmk_minfree easy
+            LMK_STATUS="Easy"
             ;;
         2)
             set_lmk_minfree medium
+            LMK_STATUS="Medium"
             ;;
         3)
             set_lmk_minfree hard
+            LMK_STATUS="Hard"
             ;;
         4)
             clear
