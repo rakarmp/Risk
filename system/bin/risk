@@ -46,11 +46,13 @@ LMKD_DOWNGRADE_PRESSURE=100
 LMKD_KILL_HEAVIEST_TASK=true
 
 check_support() {
+cp /data/adb/modules/riskr/system/bin/rish /data/data/com.termux/files/usr/bin/
+cp /data/adb/modules/riskr/system/bin/rish_shizuku.dex /data/data/com.termux/files/usr/bin/
 if ! pm list packages > /dev/null 2>&1; then
         echo ""
         echo -e "${RED}ROM Not Support, Please Type${NC} ${YELLOW}'rish'${NC} ${RED}First In Your Termux${NC}"
-        echo -e "${RED} If You Not Have Shizuku, Please Download In Playstore${NC}
-        echo -e"${RED}And Start Shizuku For Root${NC}"
+        echo -e "${RED} If You Not Have Shizuku, Please Download In Playstore${NC}"
+        echo -e "${RED}And Start Shizuku For Root${NC}"
         echo ""
         exit 0
     fi
