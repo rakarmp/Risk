@@ -356,8 +356,7 @@ while true; do
         echo "   intensive, like playing a very game"
         echo "   heavy or using applications that "
         echo "   require very high resources."
-        echo "4. Reset LMKD"
-        echo "5. Return to main menu"
+        echo "4. Return to main menu"
         printf "Options: "
         read -r choice
     case $choice in
@@ -371,10 +370,6 @@ while true; do
             set_lmk_minfree hard
             ;;
         4)
-            echo "Bye Madafaka!"
-            exit 0
-            ;;
-        5)
             clear
             return
             ;;
@@ -395,8 +390,8 @@ echo "${BLUE}║╔╗╔╬╣══╣╚╝╝${NC}"
 echo "${BLUE}║║║╚╣╠══║╔╗╗${NC}"
 echo "${BLUE}╚╝╚═╩╩══╩╝╚╝ ULTIMATE TOOLS${NC}"
 echo " "
-echo "${BLUE}ANDROID VERSION : ${ANDROID}:${NC}"
-echo "${BLUE}KERNEL.           : ${KERNEL}:${NC}"
+echo "${BLUE}ANDROID VERSION : ${ANDROID}${NC}"
+echo "${BLUE}KERNEL.            : ${KERNEL}:${NC}"
 echo " "
         echo "${BLUE}Select mode:${NC}"
         echo "1. Safe ${YELLOW}(stop third party apps only)${NC}"
