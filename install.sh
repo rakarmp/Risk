@@ -31,6 +31,7 @@ REPLACE_EXAMPLE="
 REPLACE="
 "
 RISK_DIR="/sdcard/Android"
+TERMUX_DIR="/data/data/com.termux/files/usr/bin"
 ui_print " "
 ui_print "  ╔═══╗───╔╗"
 ui_print "  ║╔═╗║───║║"
@@ -59,6 +60,9 @@ ui_print "  You can add applications that you don't"
 ui_print "  want to stop in the path :"
 ui_print "  - /sdcard/Android/Risk/excluded_apps.txt"
 ui_print " "
+ui_print "  If Risk is not supported, use Shizuku Download"
+ui_print "  on Playstore"
+ui_print " "
 sleep 1
 ui_print "- Setup Risk Permission"
 unzip -o "$ZIPFILE" 'excluded_apps.txt' -d $MODPATH >&2
@@ -67,7 +71,12 @@ unzip -o "$ZIPFILE" 'system.prop' -d $MODPATH >&2
 unzip -o "$ZIPFILE" 'system/*' -d $MODPATH >&2
 mkdir $RISK_DIR/Risk
 cp $MODPATH/excluded_apps.txt $RISK_DIR/Risk
+cp $MODPATH/system/rish $TERMUX_DIR
+cp $MODPATH/system/rish_shizuku.dex $TERMUX_DIR
 chmod +x "$MODPATH/system/bin/risk"
+rm $MODPATH/system/rish
+rm $MODPATH/system/rish_shizuku.dex
+
 
 set_permissions() {
   set_perm_recursive $MODPATH 0 0 0755 0644
