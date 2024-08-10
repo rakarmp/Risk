@@ -31,7 +31,7 @@ REPLACE_EXAMPLE="
 REPLACE="
 "
 RISK_DIR="/sdcard/Android"
-TERMUX_DIR="/data/data/com.termux/files/usr/bin"
+TERMUX_DIR="/data/data/com.termux/files/usr"
 ui_print " "
 ui_print "  ╔═══╗───╔╗"
 ui_print "  ║╔═╗║───║║"
@@ -71,11 +71,7 @@ unzip -o "$ZIPFILE" 'system.prop' -d $MODPATH >&2
 unzip -o "$ZIPFILE" 'system/*' -d $MODPATH >&2
 mkdir $RISK_DIR/Risk
 cp $MODPATH/excluded_apps.txt $RISK_DIR/Risk
-cp $MODPATH/system/rish $TERMUX_DIR
-cp $MODPATH/system/rish_shizuku.dex $TERMUX_DIR
 chmod +x "$MODPATH/system/bin/risk"
-rm $MODPATH/system/rish
-rm $MODPATH/system/rish_shizuku.dex
 
 
 set_permissions() {
