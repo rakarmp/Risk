@@ -1,5 +1,11 @@
 Changelog 
 
+## v.2.0
+
+- Fix For ROM Not Support Using Shizuku (HOTFIX)
+- Implement rish Shizuku for ROM Not Support
+- Add LMKD, LMK Adjusment
+
 ## v.1.9
 
 - Add Ignore Apps Like systemui etc.
