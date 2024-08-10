@@ -34,6 +34,7 @@ EXCLUDED_APPS_FILE="/sdcard/Android/Risk/excluded_apps.txt"
 DEVICE_RAM=$(grep "MemTotal" /proc/meminfo | awk '{print $2}')
 DEVICE_CPU=$(grep "processor" /proc/cpuinfo | wc -l)
 KERNEL=$(uname -a)
+ANDROID=$(getprop ro.build.version.release)
 MODPATH="/data/adb/modules/riskr"
 
 LMKD_LOW=1001
@@ -43,6 +44,18 @@ LMKD_CRITICAL_UPGRADE=false
 LMKD_UPGRADE_PRESSURE=100
 LMKD_DOWNGRADE_PRESSURE=100
 LMKD_KILL_HEAVIEST_TASK=true
+
+check_support() {
+if ! pm list packages > /dev/null 2>&1; then
+        echo ""
+        echo -e "${RED}ROM Not Support, Please Type${NC} ${YELLOW}'rish'${NC} ${RED}First In Your Termux${NC}"
+        echo -e "${RED} If You Not Have Shizuku, Please Download In Playstore${NC}
+        echo -e"${RED}And Start Shizuku For Root${NC}"
+        echo ""
+        exit 0
+    fi
+}
+
 
 load_excluded_apps() {
     EXCLUDED_APPS=()
@@ -380,7 +393,8 @@ echo "${BLUE}║╔╗╔╬╣══╣╚╝╝${NC}"
 echo "${BLUE}║║║╚╣╠══║╔╗╗${NC}"
 echo "${BLUE}╚╝╚═╩╩══╩╝╚╝ ULTIMATE TOOLS${NC}"
 echo " "
-echo "${BLUE}KERNEL : ${KERNEL}:${NC}"
+echo "${BLUE}ANDROID VERSION : ${ANDROID}:${NC}"
+echo "${BLUE}KERNEL.           : ${KERNEL}:${NC}"
 echo " "
         echo "${BLUE}Select mode:${NC}"
         echo "1. Safe ${YELLOW}(stop third party apps only)${NC}"
@@ -395,15 +409,18 @@ echo " "
 
         case $choice in
             1)
+                check_support
                 mode="Safe"
                 stop_apps "third_party"
                 ;;
             2)
+                check_support
                 mode="Aggresive"
                 stop_apps "google"
                 ;;
             3)
                 clear
+                check_support
                 custom_menu
                 mode="Custom"
                 ;;
