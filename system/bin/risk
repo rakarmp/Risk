@@ -301,6 +301,7 @@ set_lmk_minfree() {
 
     case $1 in
         easy)
+            clear
             echo "${RED}LMK minfree set to easy mode${NC}"
             Front=$((($RAM*1/100)*1024/4))
             Visible=$((($RAM*1/100)*1024/4))
@@ -309,8 +310,10 @@ set_lmk_minfree() {
             content=$((($RAM*7/100)*1024/4))
             empty=$((($RAM*8/100)*1024/4))
             sleep 1
+            exit 0
             ;;
         medium)
+            clear
             echo "${RED}LMK minfree set to medium mode${NC}"
             Front=$((($RAM*2/100)*1024/4))
             Visible=$((($RAM*2/100)*1024/4))
@@ -319,8 +322,10 @@ set_lmk_minfree() {
             content=$((($RAM*8/100)*1024/4))
             empty=$((($RAM*9/100)*1024/4))
             sleep 1
+            exit 0
             ;;
         hard)
+            clear
             echo "${RED}LMK minfree set to hard mode${NC}"
             Front=$((($RAM*3/100)*1024/4))
             Visible=$((($RAM*3/100)*1024/4))
@@ -329,6 +334,7 @@ set_lmk_minfree() {
             content=$((($RAM*9/100)*1024/4))
             empty=$((($RAM*10/100)*1024/4))
             sleep 1
+            exit 0
             ;;
         *)
             return
@@ -336,10 +342,10 @@ set_lmk_minfree() {
     esac
 
     LMK="/sys/module/lowmemorykiller/parameters"
-    chmod +w $LMK/adj
-    echo "0,0,235,530,835,1000" > $LMK/adj
-    chmod +w $LMK/minfree
-    echo "$Front,$Visible,$Second,$Hidden,$content,$empty" > $LMK/minfree
+    chmod +w $LMK/adj  > /dev/null 2>&1
+    echo "0,0,235,530,835,1000" > $LMK/adj > /dev/null 2>&1
+    chmod +w $LMK/minfree  > /dev/null 2>&1
+    echo "$Front,$Visible,$Second,$Hidden,$content,$empty" > $LMK/minfree  > /dev/null 2>&1
 }
 
 lmk_menu() {
