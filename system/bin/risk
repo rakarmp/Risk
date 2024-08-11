@@ -112,6 +112,16 @@ stop_apps() {
     if [ "$category" = "system" ] || [ "$category" = "all" ]; then
         running_apps="$running_apps $(pm list packages -s)"
     fi
+    if [ "$category" = "social" ] || [ "$category" = "all" ]; then
+        social_apps="com.facebook.katana com.instagram.android com.twitter.android com.snapchat.android com.whatsapp com.tiktok"
+        installed_social_apps=""
+        for app in $social_apps; do
+            if pm list packages | grep -q "$app"; then
+                installed_social_apps="$installed_social_apps $app"
+            fi
+        done
+        running_apps="$running_apps $installed_social_apps"
+    fi
 
     for app in $running_apps; do
         package_name=$(echo "$app" | sed 's/package://')
@@ -125,6 +135,7 @@ stop_apps() {
     exit 0
 }
 
+
 custom_menu() {
     while true; do
         echo -e "${BLUE}Select the application category you want to stop:${NC}"
@@ -132,7 +143,8 @@ custom_menu() {
         echo "2. Google Apps"
         echo "3. System applications"
         echo "4. All applications"
-        echo "5. Return to main menu"
+        echo "5. Social Media"
+        echo "0. Return to main menu"
         printf "Options: "
         read -r choice
 
@@ -149,7 +161,10 @@ custom_menu() {
             4)
                 stop_apps "all"
                 ;;
-            5)
+            4)
+                stop_apps "social"
+                ;;
+            0)
                 clear
                 return
                 ;;
@@ -416,8 +431,8 @@ echo " "
         echo "3. Custom ${YELLOW}(select the application category you want to stop)${NC}"
         echo "4. LMKD Adjusment A10+"
         echo "5. LMK adj,minfree Adjusment (If Your Kernel Support)"
-        echo "6. Exit"
-        echo "7. Force Exit Termux"
+        echo "0. Exit"
+        echo "99. Force Exit Termux"
         printf "Options: "
         read -r choice
 
@@ -447,14 +462,14 @@ echo " "
                 check_lmk_support
                 lmk_menu
                 ;;
-            6)
+            0)
                 clear
                 echo "Bye, Madafaka...."
                 sleep 0.5
                 clear
                 exit 0
                 ;;
-            7)
+            99)
                 clear
                 echo "Bye, Madafaka...."
                 sleep 0.5
