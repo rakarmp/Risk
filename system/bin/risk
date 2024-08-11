@@ -35,6 +35,7 @@ DEVICE_RAM=$(grep "MemTotal" /proc/meminfo | awk '{print $2}')
 DEVICE_CPU=$(grep "processor" /proc/cpuinfo | wc -l)
 KERNEL=$(uname -a)
 ANDROID=$(getprop ro.build.version.release)
+VER=$(grep "set" /data/adb/modules/riskr/module.prop | cut -d'=' -f2)
 MODPATH="/data/adb/modules/riskr"
 
 LMKD_LOW=1001
@@ -548,8 +549,10 @@ echo "${BLUE}║╔╗╔╬╣══╣╚╝╝${NC}"
 echo "${BLUE}║║║╚╣╠══║╔╗╗${NC}"
 echo "${BLUE}╚╝╚═╩╩══╩╝╚╝ CONTROL IS YOURS${NC}"
 echo " "
-echo "${BLUE}ANDROID VERSION : ${ANDROID}${NC}"
-echo "${BLUE}KERNEL.            : ${KERNEL}:${NC}"
+echo "${BLUE}RISK VERSION -> ${VER}${NC}"
+echo " "
+echo "${BLUE}ANDROID VERSION -> ${ANDROID}${NC}"
+echo "${BLUE}KERNEL -> ${KERNEL}:${NC}"
 echo " "
         echo "${BLUE}Select mode:${NC}"
         echo "1. Safe ${YELLOW}(stop third party apps only)${NC}"
