@@ -98,6 +98,38 @@ echo "ro.lmk.downgrade_pressure=$LMKD_DOWNGRADE_PRESSURE" >> $MODPATH/system.pro
 echo "ro.lmk.kill_heaviest_task=$LMKD_KILL_HEAVIEST_TASK" >> $MODPATH/system.prop
 }
 
+sosmed() {
+    category="$1"
+    clear
+    echo -e "${YELLOW}Risk Mode: $mode${NC}"
+    trim
+    echo -e "${YELLOW}Stopping category apps: $category${NC}"
+
+    running_apps=""
+
+    if [ "$category" = "sosmed" ] || [ "$category" = "all" ]; then
+        social_apps="com.facebook.katana com.facebook.lite com.instagram.android com.twitter.android com.twitter.android.lite com.snapchat.android com.whatsapp com.whatsapp.w4b com.tiktok org.telegram.messenger org.telegram.messenger.web org.thunderdog.challegram com.michatapp.im com.ss.android.ugc.trill com.zhiliaoapp.musically com.zhiliaoapp.musically.go com.instagram.lite"
+        installed_social_apps=""
+        for app in $social_apps; do
+            if pm list packages | grep -q "$app"; then
+                installed_social_apps="$installed_social_apps $app"
+            fi
+        done
+        running_apps="$installed_social_apps"
+    fi
+
+    for app in $running_apps; do
+        package_name=$(echo "$app" | sed 's/package://')
+        if ! is_excluded "$package_name"; then
+            echo -e "${RED}Stopping $package_name${NC}"
+            am force-stop "$package_name"
+        else
+            echo -e "${BLUE}Skipping $package_name (exception)${NC}"
+        fi
+    done
+    exit 0
+}
+
 stop_apps() {
     category="$1"
     clear
@@ -112,16 +144,6 @@ stop_apps() {
     if [ "$category" = "system" ] || [ "$category" = "all" ]; then
         running_apps="$running_apps $(pm list packages -s)"
     fi
-    if [ "$category" = "social" ] || [ "$category" = "all" ]; then
-        social_apps="com.facebook.katana com.facebook.lite com.instagram.android com.twitter.android com.twitter.android.lite com.snapchat.android com.whatsapp com.whatsapp.w4b com.tiktok org.telegram.messenger org.telegram.messenger.web org.thunderdog.challegram com.michatapp.im com.ss.android.ugc.trill com.zhiliaoapp.musically com.zhiliaoapp.musically.go com.instagram.lite"
-        installed_social_apps=""
-        for app in $social_apps; do
-            if pm list packages | grep -q "$app"; then
-                installed_social_apps="$installed_social_apps $app"
-            fi
-        done
-        running_apps="$running_apps $installed_social_apps"
-    fi
 
     for app in $running_apps; do
         package_name=$(echo "$app" | sed 's/package://')
@@ -135,6 +157,19 @@ stop_apps() {
     exit 0
 }
 
+clean_third_party_apps() {
+    clear
+    echo -e "${YELLOW}Cleaning third-party apps cache${NC}"
+    echo ""
+    third_party_apps=$(pm list packages -3 | sed 's/package://')
+
+    for app in $third_party_apps; do
+        echo -e "${RED}Cleaning cache for $app${NC}"
+        pm trim-caches 100M
+    done
+    echo ""
+    exit 0
+}
 
 custom_menu() {
     while true; do
@@ -161,15 +196,15 @@ custom_menu() {
             4)
                 stop_apps "all"
                 ;;
-            4)
-                stop_apps "social"
+            5)
+                sosmed "sosmed"
                 ;;
             0)
                 clear
                 return
                 ;;
             *)
-                echo -e "${RED}Invalid Selection. Are You Blind?.${NC}"
+                echo -e "${RED}Invalid Selection. Are You Blind?${NC}"
                 ;;
         esac
     done
@@ -412,6 +447,97 @@ while true; do
 done
 }
 
+freeze_apps() {
+    clear
+    echo -e "${YELLOW}Freezing third-party apps${NC}"
+
+    third_party_apps=$(pm list packages -3 | sed 's/package://')
+
+    echo ""
+    index=1
+    declare -A app_map > /dev/null 2>&1
+    for app in $third_party_apps; do
+        app_name=$(pm list packages -f | grep "$app" | sed 's/.*=//' | sed 's/package://')
+        app_map[$index]=$app
+        if pm list packages -d | grep -q "$app"; then
+            echo -e "${YELLOW}${index}. $app${NC} - ${RED}(Frozen)${NC}"
+        else
+            echo -e "${YELLOW}${index}. $app${NC} - ${GREEN}(Active)${NC}"
+        fi
+        index=$((index + 1))
+    done
+
+    echo " "
+    echo "Enter the number of the app you want to freeze (or type 'exit' to quit 'back' to return home)"
+    printf "Type:"
+    read -r app_number
+
+    if [ "$app_number" = "exit" ]; then
+        clear
+        echo "By Madafaka"
+        clear
+        exit 0
+    elif [ -n "${app_map[$app_number]}" ]; then
+        clear
+        sleep 1
+        package_name=${app_map[$app_number]}
+        echo -e "${RED}Freezing $package_name${NC}"
+        pm disable-user --user 0 "$package_name" > /dev/null 2>&1
+        echo ""
+    elif [ "$app_number" = "back" ]; then
+        clear
+        return
+    else
+        echo -e "${BLUE}Are You Blind?${NC}"
+    fi
+
+    exit 0
+}
+
+unfreeze_apps() {
+    clear
+    echo -e "${YELLOW}Unfreezing third-party apps${NC}"
+
+    third_party_apps=$(pm list packages -3 | sed 's/package://')
+
+    echo ""
+    index=1
+    declare -A app_map > /dev/null 2>&1
+    for app in $third_party_apps; do
+        app_name=$(pm list packages -f | grep "$app" | sed 's/.*=//' | sed 's/package://')
+        app_map[$index]=$app
+        if pm list packages -d | grep -q "$app"; then
+            echo -e "${YELLOW}${index}. $app${NC} - ${RED}(Frozen)${NC}"
+        else
+            echo -e "${YELLOW}${index}. $app${NC} - ${GREEN}(Active)${NC}"
+        fi
+        index=$((index + 1))
+    done
+
+    echo " "
+    echo "Enter the number of the app you want to unfreeze (or type 'exit' to quit 'back' to return home):"
+    printf "Type:"
+    read -r app_number
+        if [ "$app_number" = "exit" ]; then
+        echo "Exiting..."
+        exit 0
+    elif [ -n "${app_map[$app_number]}" ]; then
+        clear
+        sleep 1
+        package_name=${app_map[$app_number]}
+        echo -e "${GREEN}Unfreezing $package_name${NC}"
+        pm enable "$package_name" > /dev/null 2>&1
+        echo ""
+    elif [ "$app_number" = "back" ]; then
+        clear
+        return
+    else
+        echo -e "${BLUE}Are You Blind?${NC}"
+    fi
+
+    exit 0
+}
+
 main_menu() {
     while true; do
     echo " "
@@ -420,7 +546,7 @@ echo "${BLUE}║╔═╗║───║║${NC}"
 echo "${BLUE}║╚═╝╠╦══╣║╔╗${NC}"
 echo "${BLUE}║╔╗╔╬╣══╣╚╝╝${NC}"
 echo "${BLUE}║║║╚╣╠══║╔╗╗${NC}"
-echo "${BLUE}╚╝╚═╩╩══╩╝╚╝ ULTIMATE TOOLS${NC}"
+echo "${BLUE}╚╝╚═╩╩══╩╝╚╝ CONTROL IS YOURS${NC}"
 echo " "
 echo "${BLUE}ANDROID VERSION : ${ANDROID}${NC}"
 echo "${BLUE}KERNEL.            : ${KERNEL}:${NC}"
@@ -431,6 +557,9 @@ echo " "
         echo "3. Custom ${YELLOW}(select the application category you want to stop)${NC}"
         echo "4. LMKD Adjusment A10+"
         echo "5. LMK adj,minfree Adjusment (If Your Kernel Support)"
+        echo "6. Clean Cache (Only Third Party Apps)"
+        echo "7. Freeze App (Third Party Apps)"
+        echo "8. Unfreeze App"
         echo "0. Exit"
         echo "99. Force Exit Termux"
         printf "Options: "
@@ -461,6 +590,21 @@ echo " "
                 clear
                 check_lmk_support
                 lmk_menu
+                ;;
+            6)
+                clear
+                check_support
+                clean_third_party_apps
+                ;;
+            7)
+                clear
+                check_support
+                freeze_apps
+                ;;
+            8)
+                clear
+                check_support
+                unfreeze_apps
                 ;;
             0)
                 clear
