@@ -1,5 +1,12 @@
 Changelog 
 
+## v.2.1
+
+- Add LMKD, LMK Status
+- New Custom Menu Stop Social Media App
+- Impement Identity Social Media App
+- Small Change ETC.
+
 ## v.2.0
 
 - Fix For ROM Not Support Using Shizuku (HOTFIX)
