@@ -113,7 +113,7 @@ stop_apps() {
         running_apps="$running_apps $(pm list packages -s)"
     fi
     if [ "$category" = "social" ] || [ "$category" = "all" ]; then
-        social_apps="com.facebook.katana com.instagram.android com.twitter.android com.snapchat.android com.whatsapp com.tiktok"
+        social_apps="com.facebook.katana com.facebook.lite com.instagram.android com.twitter.android com.twitter.android.lite com.snapchat.android com.whatsapp com.whatsapp.w4b com.tiktok org.telegram.messenger org.telegram.messenger.web org.thunderdog.challegram com.michatapp.im com.ss.android.ugc.trill com.zhiliaoapp.musically com.zhiliaoapp.musically.go com.instagram.lite"
         installed_social_apps=""
         for app in $social_apps; do
             if pm list packages | grep -q "$app"; then
