@@ -1,5 +1,11 @@
 Changelog 
 
+## v.2.2
+
+- Fix LMK Adjusment Doesn't work
+- Deleted Adj Value Has a Problem
+- Freeze App Third Party (Need Test)
+
 ## v.2.1
 
 - Add LMKD, LMK Status
