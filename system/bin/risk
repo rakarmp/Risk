@@ -542,6 +542,104 @@ unfreeze_apps() {
     exit 0
 }
 
+game_overlay_downscale() {
+echo ""
+echo ""
+printf "\e[101m\e[1;77mNOTE!\e[0m\n"
+echo ""
+echo "${YELLOW}You can only enter 1 package, if you want another package, enter this menu again${NC}"
+echo ""
+echo ""
+echo -ne "Enter Package Name: "
+read -s ofpsg
+echo "How much Downscale do you want?"
+echo -ne "Recommendation 1.0 to 0.5 : "
+read -s ofpsga
+device_config put game_overlay $ofpsg mode=2,downscaleFactor=$ofpsga:mode=3,downscaleFactor=$ofpsga > /dev/null 2>&1
+sleep 1
+echo "" 
+echo "Done! more information check ${YELLOW}https://developer.android.com/games/gamemode/gamemode-interventions${NC}"
+exit 0
+}
+
+check_android_version() {
+  local version=$(getprop ro.build.version.release)
+  local major_version=$(echo $version | cut -d. -f1)
+
+  if [ "$major_version" -lt 12 ]; then
+    echo "Your Android Version Not Support"
+    exit
+  fi
+}
+
+change_resolution() {
+  clear
+  echo "Enter the desired resolution (e.g. 1080x1920):"
+  read resolution
+  wm size $resolution
+  echo "Resolution changed to $resolution"
+}
+
+reset_resolution() {
+  clear
+  echo "Resetting resolution to default..."
+  wm size reset
+  echo "Resolution reset to default"
+}
+
+display_menu() {
+  clear
+  echo "Resolution Changer"
+  echo ""
+  echo "1. Change Resolution"
+  echo "2. Reset Resolution"
+  echo "3. Quit"
+  echo ""
+  echo "Enter your choice:"
+}
+
+resolution_changer() {
+while true
+do
+  display_menu
+  read choice
+
+  case $choice in
+    1) change_resolution ;;
+    2) reset_resolution ;;
+    3) exit ;;
+    *) echo "Invalid choice. Please try again." ;;
+  esac
+done
+}
+
+monolith_compile() {
+MODE="speed-profile"
+MLOG="/sdcard/Android/Risk/risk.log"
+package_list=$(pm list packages)
+
+compile_command="pm compile -a"
+[ "$1" = "-f" ] && compile_command+=" -f"
+
+echo "$(date '+%Y-%m-%d %H:%M:%S') >>> Compiling packages" >> "$MLOG"
+$compile_command -m "$MODE"
+
+echo "$(date '+%Y-%m-%d %H:%M:%S') >>> Compiling layouts" >> "$MLOG"
+$compile_command --compile-layouts
+
+echo "$(date '+%Y-%m-%d %H:%M:%S') >>> Compiling secondary dex files" >> "$MLOG"
+$compile_command --secondary-dex -m "$MODE" 
+
+echo "$(date '+%Y-%m-%d %H:%M:%S') >>> Reconciling secondary dex files" >> "$MLOG"
+for package in $package_list; do
+    clear
+    pm reconcile-secondary-dex-files "$package"
+done
+
+echo "$(date '+%Y-%m-%d %H:%M:%S') >>> Done" >> "$MLOG"
+exit 0
+}
+
 main_menu() {
     while true; do
     echo " "
@@ -566,6 +664,9 @@ echo " "
         echo "6. Clean Cache ${YELLOW}(Only Third Party Apps)${NC}"
         echo "7. Freeze App ${YELLOW}(Third Party Apps)${NC}"
         echo "8. Unfreeze App"
+        echo "9. Downscale ${YELLOW}(Work On Android 12+)${NC}"
+        echo "10. Resolution Changer"
+        echo "11. Monolith Compile ${YELLOW}(Compile Apps With Reconcile)${NC}"
         echo "0. Exit"
         echo "99. Force Exit Termux"
         printf "Options: "
@@ -611,6 +712,22 @@ echo " "
                 clear
                 check_support
                 unfreeze_apps
+                ;;
+            9)
+                clear
+                check_support
+                check_android_version
+                game_overlay_downscale
+                ;;
+            10)
+                clear
+                check_support
+                resolution_changer
+                ;;
+            11)
+                clear
+                check_support
+                monolith_compile
                 ;;
             0)
                 clear
