@@ -72,6 +72,7 @@ unzip -o "$ZIPFILE" 'system/*' -d $MODPATH >&2
 mkdir $RISK_DIR/Risk
 cp $MODPATH/excluded_apps.txt $RISK_DIR/Risk
 chmod +x "$MODPATH/system/bin/risk"
+touch $RISK_DIR/Risk/risk.log
 
 
 set_permissions() {
