@@ -1,8 +1,8 @@
 id=riskr
 name=Risk - RAM Cache Apps Cleaner
-version=2.2-270824
-set=2.2-270824
-versionCode=350270824
+version=2.3-011024
+set=2.3-011024
+versionCode=437011024 
 author=Zyarexx @Telegram
 description=Clean RAM Cache And Stop Background Apps, Google Apps, Third Party Apps Before Playing Games, To Get More Free RAM | Termux Menu : su -c risk
 updateJson=https://raw.githubusercontent.com/rakarmp/Risk/main/update.json
