@@ -572,44 +572,120 @@ check_android_version() {
   fi
 }
 
-change_resolution() {
-  clear
-  echo "Enter the desired resolution (e.g. 1080x1920):"
-  read resolution
-  wm size $resolution
-  echo "Resolution changed to $resolution"
+get_current_resolution() {
+    wm size | awk '{print $3}'
+}
+
+get_physical_resolution() {
+    dumpsys display | grep 'PhysicalDisplayInfo' | awk -F'[{}]' '{print $2}' | awk '{print $1 "x" $3}' | sed 's/,//' | head -n 1
+}
+
+get_current_density() {
+    wm density | awk '{print $3}' | head -n 1
+}
+
+set_resolution() {
+    local resolution=$1
+    wm size $resolution
+}
+
+set_density() {
+    local density=$1
+    wm density $density
 }
 
 reset_resolution() {
-  clear
-  echo "Resetting resolution to default..."
-  wm size reset
-  echo "Resolution reset to default"
+    wm size reset
+    wm density reset
 }
 
-display_menu() {
-  clear
-  echo "Resolution Changer"
-  echo ""
-  echo "1. Change Resolution"
-  echo "2. Reset Resolution"
-  echo "3. Quit"
-  echo ""
-  echo "Enter your choice:"
+recommend_resolution() {
+    local current_res=$1
+    local width=$(echo $current_res | cut -d'x' -f1)
+    local height=$(echo $current_res | cut -d'x' -f2)
+    local new_width=$((width / 2))
+    local new_height=$((height / 2))
+    echo "${new_width}x${new_height}"
+}
+
+recommend_density() {
+    local current_density=$1
+    local new_density=$((current_density / 2))
+    echo "$new_density"
+}
+
+calculate_density() {
+    local physical_res=$1
+    local new_res=$2
+    local current_density=$3
+
+    local physical_width=$(echo $physical_res | cut -d'x' -f1)
+    local physical_height=$(echo $physical_res | cut -d'x' -f2)
+    local new_width=$(echo $new_res | cut -d'x' -f1)
+    local new_height=$(echo $new_res | cut -d'x' -f2)
+
+    local width_ratio=$(echo "scale=2; $new_width / $physical_width" | bc)
+    local height_ratio=$(echo "scale=2; $new_height / $physical_height" | bc)
+
+    local avg_ratio=$(echo "scale=2; ($width_ratio + $height_ratio) / 2" | bc)
+    local new_density=$(echo "scale=0; $current_density * $avg_ratio" | bc)
+
+    echo "$new_density"
 }
 
 resolution_changer() {
-while true
-do
-  display_menu
-  read choice
-
-  case $choice in
-    1) change_resolution ;;
-    2) reset_resolution ;;
-    3) exit ;;
-    *) echo "Invalid choice. Please try again." ;;
-  esac
+while true; do
+    clear
+    echo "Screen Resolution Changer"
+    echo "========================="
+    current_res=$(get_current_resolution)
+    physical_res=$(get_physical_resolution)
+    current_density=$(get_current_density)
+    echo "Current Resolution: $current_res"
+    echo "Physical Resolution: $physical_res"
+    echo "Current Density: $current_density"
+    
+    recommended_res=$(recommend_resolution $physical_res)
+    recommended_density=$(recommend_density $current_density)
+    echo "Recommended Lower Resolution: $recommended_res"
+    echo "Recommended Lower Density: $recommended_density"
+    
+    echo "1. Set Recommended Resolution and Density"
+    echo "2. Set Custom Resolution and Automatic Density"
+    echo "3. Reset Resolution and Density"
+    echo "4. Exit"
+    echo -n "Choose an option: "
+    read choice
+    
+    case $choice in
+        1)
+            set_resolution $recommended_res
+            set_density $recommended_density
+            echo "Resolution set to $recommended_res"
+            echo "Density set to $recommended_density"
+            ;;
+        2)
+            echo -n "Enter custom resolution (e.g., 1280x720): "
+            read custom_res
+            custom_density=$(calculate_density $physical_res $custom_res $current_density)
+            set_resolution $custom_res
+            set_density $custom_density
+            echo "Resolution set to $custom_res"
+            echo "Density set to $custom_density"
+            ;;
+        3)
+            reset_resolution
+            echo "Resolution and density reset to default"
+            ;;
+        4)
+            exit 0
+            ;;
+        *)
+            echo "Invalid option, please try again."
+            ;;
+    esac
+    echo -n "Press any key to continue..."
+    read -n 1
 done
 }
 
