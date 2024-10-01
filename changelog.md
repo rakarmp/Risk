@@ -1,5 +1,15 @@
 Changelog 
 
+## v.2.3
+
+- New Feature
+  - Downscale per package
+  - Resolution Changer
+  - Monolith Compile
+- Bug Fix And Improvement
+- Add .log For Monolith Compile
+
+
 ## v.2.2
 
 - Fix LMK Adjusment Doesn't work
